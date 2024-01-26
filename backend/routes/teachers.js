@@ -1,9 +1,10 @@
 import Express from "express";
+import cors from "cors";
 import bodyParser from "body-parser";
 import mongoDatabase from "../database/connect.mjs"
 const router = Express.Router();
 
-
+router.use(cors())
 router.use(bodyParser.json())
 
 router.get('/', async (req, res) => {
@@ -22,18 +23,16 @@ router.get('/', async (req, res) => {
   }
 
 
-  res.json({
-    message: 'Teachers list in the database',
-    teachers: data
-  })
+  res.json(data)
 })
 
 router.get('/add', async (req, res) => {
 
   if (req.query?.name && req.query?.subject && req.query?.classes) {
-    let name = req.query?.name;
-    let subject = req.query?.subject;
-    let classes = req.query?.classes;
+    let name = decodeURIComponent(req.query?.name);
+    let subject = decodeURIComponent(req.query?.subject);
+    let classes = decodeURIComponent(req.query?.classes);
+
     classes = classes.split(",").map((item) => {
       try {
         if (parseInt(item)) {
